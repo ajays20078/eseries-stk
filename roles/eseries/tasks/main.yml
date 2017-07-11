@@ -54,8 +54,6 @@
     size: 2185
     size_unit: gb
 
-- debug: var=hostvars[inventory_hostname]['fc_ports']
-
 - name: Host Ports
   netapp_e_host:
     ssid: "{{ ssid }}"
@@ -64,21 +62,23 @@
     api_password: "{{ api_password }}"
     validate_certs: "{{ validate_certs }}"
     host_type_index: 28
-    name: host1
+    name: "{{ item}}"
     state: present
     ports: 
-      asdf: 1
-      #hostvars[inventory_hostname]['fc_ports'][0]
+      "{{ hostvars[item]['fc_ports'] }}"
+  with_inventory_hostnames:
+    - fc_hosts
 
-- name: Map Volumes
-  netapp_e_lun_mapping:
-    ssid: "{{ ssid }}"
-    api_url: "{{ api_url }}"
-    api_username: "{{ api_username }}"
-    api_password: "{{ api_password }}"
-    validate_certs: "{{ validate_certs }}"
-    state: present
-    target: host1
-    target_type: host
-    volume_name: Volume1
+
+#- name: Map Volumes
+#  netapp_e_lun_mapping:
+#    ssid: "{{ ssid }}"
+#    api_url: "{{ api_url }}"
+#    api_username: "{{ api_username }}"
+#    api_password: "{{ api_password }}"
+#    validate_certs: "{{ validate_certs }}"
+#    state: present
+#    target: host1
+#    target_type: host
+#    volume_name: Volume1
 
