@@ -1,0 +1,12 @@
+---
+
+    - name: WWN
+      shell: cat /sys/class/fc_host/host*/port_name | head -1
+      register: wwn
+      tags: wwn
+
+    - name: set WWN fact
+      set_fact: 
+        wwn_fact: wwn.stdout_lines
+      tags: fact
+    - debug: msg="{{wwn.stdout}}"

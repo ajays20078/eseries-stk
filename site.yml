@@ -1,0 +1,16 @@
+---
+# This playbook deploys the whole application stack in this site.
+
+- name: configure fc_hosts
+  hosts: fc_hosts
+  remote_user: root
+
+  roles:
+    - fc_hosts
+
+- name: configure eseries
+  hosts: eseries
+  remote_user: root
+
+  roles:
+    - eseries

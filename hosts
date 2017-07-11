@@ -1,0 +1,6 @@
+[eseries]
+10.113.1.79
+
+[fc_hosts]
+10.113.1.79 ansible_user=root ansible_ssh_pass=infiniti
+10.113.1.78 ansible_user=root ansible_ssh_pass=infiniti

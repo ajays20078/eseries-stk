@@ -1,0 +1,73 @@
+---
+# Do some stuff on eseries array
+
+
+- name: Disk_Pool_SSD
+  netapp_e_storagepool:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    criteria_drive_count: 24
+    criteria_drive_type: ssd
+    name: Disk_Pool_SSD1
+    raid_level: raidDiskPool
+    state: present
+    validate_certs: "{{ validate_certs }}"
+
+- name: Volume1
+  netapp_e_volume:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
+    name: Volume1
+    state: present
+    storage_pool_name: Disk_Pool_SSD1
+    size: 2185
+    size_unit: gb
+
+- name: Volume2
+  netapp_e_volume:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
+    name: Volume2
+    state: present
+    storage_pool_name: Disk_Pool_SSD1
+    size: 2185
+    size_unit: gb
+
+- name: Volume3
+  netapp_e_volume:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
+    name: Volume3
+    state: present
+    storage_pool_name: Disk_Pool_SSD1
+    size: 2185
+    size_unit: gb
+
+- name: Host
+  netapp_e_host:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
+    host_type_index: 28
+    name: host1
+    state: present
+    ports: 
+      - type: fc
+        port: 21000024ff46be48
+        label: h1p1
+      - type: fc
+        port: 21000024ff46be49
+        label: h1p2
