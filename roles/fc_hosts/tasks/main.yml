@@ -17,6 +17,6 @@
     fc_ports: "{{ fc_ports| default([])  + [ {'type': 'fc' , 'label':item , 'port':item } ]}}"
   with_items:
     - "{{ wwn.stdout_lines }}"
-
+  when: wwn.stdout_lines is defined
 
 - debug: var=fc_ports
