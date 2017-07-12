@@ -8,8 +8,8 @@ This repository contains ansible playbooks that assist in configuring NetApp Ese
 #### Table of Contents
 
   1. [Disclaimer](#disclaimer)
-  2. [Overview](#Overview)
-  3. [Getting Started](#Getting Started)
+  2. [Overview](#overview)
+  3. [Getting Started](#gettingstarted)
 
 ## Disclaimer
 
