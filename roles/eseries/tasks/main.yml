@@ -69,7 +69,7 @@
     api_password: "{{ api_password }}"
     validate_certs: "{{ validate_certs }}"
     host_type_index: 28
-    name: "{{ item}}"
+    name: "{{ item }}"
     state: present
     ports: 
       "{{ hostvars[item]['fc_ports'] }}"

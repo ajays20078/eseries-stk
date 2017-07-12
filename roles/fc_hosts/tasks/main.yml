@@ -2,12 +2,6 @@
 
 - name: Verify DMMP
   service: name=multipathd state=started
-#  register: dmmp_status
-
-#- debug: var=dmmp_status.status.SubState
-
-#- assert: { that: dmmp_status.status.SubState == "running"}
-
 
 - name: WWN
   shell: cat /sys/class/fc_host/host*/port_name | cut -c 3-
