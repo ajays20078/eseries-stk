@@ -2,15 +2,16 @@
 # This playbook deploys the whole application stack in this site.
 
 - name: configure fc_hosts
+  any_errors_fatal: true
   hosts: fc_hosts
   remote_user: root
-
   roles:
     - fc_hosts
 
 - name: configure eseries
+  any_errors_fatal: true
   hosts: eseries
   remote_user: root
-
+  gather_facts: False
   roles:
     - eseries

@@ -1,6 +1,13 @@
 ---
 # Do some stuff on eseries array
 
+#- name: Gather Facts
+#  netapp_e_facts:
+#    ssid: "{{ ssid }}"
+#    api_url: "{{ api_url }}"
+#    api_username: "{{ api_username }}"
+#    api_password: "{{ api_password }}"
+#    validate_certs: "{{ validate_certs }}"
 
 - name: Disk_Pool_SSD
   netapp_e_storagepool:
@@ -81,4 +88,3 @@
 #    target: host1
 #    target_type: host
 #    volume_name: Volume1
-
