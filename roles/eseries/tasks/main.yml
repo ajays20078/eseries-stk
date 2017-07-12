@@ -15,6 +15,14 @@
     state: present
     validate_certs: "{{ validate_certs }}"
 
+- name: disk facts
+  netapp_e_disk_facts:
+      ssid: "{{ ssid }}"
+      api_url: "{{ api_url }}"
+      api_username: "{{ api_username }}"
+      api_password: "{{ api_password }}"
+      validate_certs: "{{ validate_certs }}"
+
 - name: Volume1
   netapp_e_volume:
     ssid: "{{ ssid }}"
