@@ -1,13 +1,21 @@
 ---
 # Do some stuff on eseries array
 
-#- name: Gather Facts
-#  netapp_e_facts:
-#    ssid: "{{ ssid }}"
-#    api_url: "{{ api_url }}"
-#    api_username: "{{ api_username }}"
-#    api_password: "{{ api_password }}"
-#    validate_certs: "{{ validate_certs }}"
+- name: Gather Facts
+  netapp_e_facts:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
+
+- name: Gather Disk Facts
+  netapp_e_disk_facts:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
 
 - name: Disk_Pool_SSD
   netapp_e_storagepool:
@@ -21,6 +29,14 @@
     raid_level: raidDiskPool
     state: present
     validate_certs: "{{ validate_certs }}"
+
+- name: disk facts
+  netapp_e_disk_facts:
+      ssid: "{{ ssid }}"
+      api_url: "{{ api_url }}"
+      api_username: "{{ api_username }}"
+      api_password: "{{ api_password }}"
+      validate_certs: "{{ validate_certs }}"
 
 - name: Volume1
   netapp_e_volume:

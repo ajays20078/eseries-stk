@@ -53,13 +53,24 @@ msg:
     type: string
 """
 
+from ansible.module_utils.api import basic_auth_argument_spec
 from ansible.module_utils.basic import AnsibleModule, get_exception
-from ansible.module_utils.netapp import request, eseries_host_argument_spec
+from ansible.module_utils.six.moves.urllib.error import HTTPError
+from ansible.module_utils.urls import open_url
+
 import collections
+import json
 
 
 def main():
-    argument_spec = eseries_host_argument_spec()
+    argument_spec = basic_auth_argument_spec()
+    argument_spec.update(
+        api_username=dict(type='str', required=True),
+        api_password=dict(type='str', required=True, no_log=True),
+        api_url=dict(type='str', required=True),
+        ssid=dict(required=True)
+    )
+
     module = AnsibleModule(
         argument_spec=argument_spec,
         supports_check_mode=True
@@ -74,8 +85,8 @@ def main():
     api_pwd = p['api_password']
     api_url = p['api_url']
 
-    facts = {}
-    a_facts = dict(ssid=facts)
+    facts = dict()
+    ansible_facts = {ssid: facts}
 
     # fetch the list of drive objects
     try:
@@ -94,8 +105,40 @@ def main():
         ]) for d in resp]
     )
 
-    result = dict(ansible_facts=a_facts, changed=False)
+    result = dict(ansible_facts=ansible_facts, changed=False)
     module.exit_json(msg="Gathered facts for %s." % ssid, **result)
+
+
+def request(url, data=None, headers=None, method='GET', use_proxy=True,
+            force=False, last_mod_time=None, timeout=10, validate_certs=True,
+            url_username=None, url_password=None, http_agent=None, force_basic_auth=True, ignore_errors=False):
+    try:
+        r = open_url(url=url, data=data, headers=headers, method=method, use_proxy=use_proxy,
+                     force=force, last_mod_time=last_mod_time, timeout=timeout, validate_certs=validate_certs,
+                     url_username=url_username, url_password=url_password, http_agent=http_agent,
+                     force_basic_auth=force_basic_auth)
+    except HTTPError:
+        err = get_exception()
+        r = err.fp
+
+    try:
+        raw_data = r.read()
+        if raw_data:
+            data = json.loads(raw_data)
+        else:
+            data = None
+    except:
+        if ignore_errors:
+            pass
+        else:
+            raise
+
+    resp_code = r.getcode()
+
+    if resp_code >= 400 and not ignore_errors:
+        raise Exception(resp_code, data)
+    else:
+        return resp_code, data
 
 
 if __name__ == "__main__":

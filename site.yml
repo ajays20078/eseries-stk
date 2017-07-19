@@ -11,6 +11,7 @@
 - name: configure eseries
   any_errors_fatal: true
   hosts: eseries
+  connection: local
   remote_user: root
   gather_facts: False
   roles:
