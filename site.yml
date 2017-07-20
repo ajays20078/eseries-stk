@@ -13,6 +13,5 @@
   hosts: eseries
   connection: local
   remote_user: root
-  gather_facts: False
   roles:
     - eseries

@@ -335,13 +335,14 @@ class Host(object):
 
     def update_host(self):
         if self.ports:
-            if self.hostports_available:
-                if self.force_port_update is True:
-                    self.reassign_ports(apply=False)
-                    # Make sure that only ports that arent being reassigned are passed into the ports attr
-                    self.ports = [port for port in self.ports if not self.port_on_diff_host(port)]
+            # Why check for available ports when updating?
+            # if self.hostports_available:
+            if self.force_port_update is True:
+                self.reassign_ports(apply=False)
+                # Make sure that only ports that arent being reassigned are passed into the ports attr
+                self.ports = [port for port in self.ports if not self.port_on_diff_host(port)]
 
-                self.post_body['ports'] = self.ports
+            self.post_body['ports'] = self.ports
 
         if self.group:
             self.post_body['groupId'] = self.group_id
@@ -354,17 +355,19 @@ class Host(object):
                                           validate_certs=self.certs, method='POST', data=json.dumps(self.post_body))
         except:
             err = get_exception()
-            self.module.fail_json(msg="Failed to update host. Array Id [%s]. Error [%s]." % (self.ssid, str(err)))
+
+            self.module.fail_json(msg="Failed to update host. post_body [%s]. Array Id [%s]. Error [%s]." % (json.dumps(self.post_body), self.ssid, str(err)))
 
         self.module.exit_json(changed=True, **self.host_obj)
 
     def create_host(self):
         post_body = dict(
             name=self.name,
-            host_type=dict(index=self.host_type_index),
+            hostType=dict(index=self.host_type_index),
             groupId=self.group_id,
             ports=self.ports
         )
+
         if self.ports:
             # Check that all supplied port args are valid
             if self.hostports_available:
