@@ -15,6 +15,11 @@ RUN apt-get update
 RUN apt-get -y install openssh-server
 RUN apt-get install -y software-properties-common
 
+# Install misc tools
+RUN apt-get -y install vim
+RUN apt-get -y install nano
+RUN apt-get -y install git
+
 # Install Ansible
 RUN apt-add-repository ppa:ansible/ansible
 RUN apt-get update

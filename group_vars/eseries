@@ -4,5 +4,3 @@ api_url: https://10.113.1.28:8443/devmgr/v2
 api_username: rw
 api_password: infiniti
 validate_certs: False
-wwn: 
-  - host1: 2100000e1e1f6b10
