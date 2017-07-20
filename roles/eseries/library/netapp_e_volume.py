@@ -22,7 +22,6 @@ ANSIBLE_METADATA = {'metadata_version': '1.0',
                     'status': ['preview'],
                     'supported_by': 'community'}
 
-
 DOCUMENTATION = '''
 ---
 module: netapp_e_volume
@@ -218,7 +217,7 @@ class NetAppESeriesVolume(object):
             ssid=dict(required=True, type='str'),
             name=dict(required=True, type='str'),
             storage_pool_name=dict(type='str'),
-            size_unit=dict(default='gb', choices=['bytes', 'b', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb'],
+            size_unit=dict(default='gb', choices=['bytes', 'b', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb', 'pct'],
                            type='str'),
             size=dict(type='int'),
             segment_size_kb=dict(default=128, choices=[8, 16, 32, 64, 128, 256, 512], type='int'),
@@ -258,6 +257,7 @@ class NetAppESeriesVolume(object):
         self.storage_pool_name = p['storage_pool_name']
         self.size_unit = p['size_unit']
         self.size = p['size']
+        self.relative_size = ['relative_size']
         self.segment_size_kb = p['segment_size_kb']
         self.ssd_cache_enabled = p['ssd_cache_enabled']
         self.data_assurance_enabled = p['data_assurance_enabled']
@@ -277,6 +277,15 @@ class NetAppESeriesVolume(object):
         except KeyError:
             self.module.fail_json(msg="You must pass in api_username "
                                       "and api_password and api_url to the module.")
+
+        if self.size_unit == 'pct':
+            pool = self.get_storage_pool(self.storage_pool_name)
+            self.size = int(int(pool['totalRaidedSpace']) * (self.size / 100.0))
+            pool_data = pool['volumeGroupData'].get('diskPoolData')
+            # TODO(lorenp): Is there anything we need to do for volumeGroups?
+            if pool_data is not None:
+                self.size = self.size - self.size % int(pool_data['allocGranularity'])
+            self.size_unit = 'b'
 
     def get_volume(self, volume_name):
         self.debug('fetching volumes')

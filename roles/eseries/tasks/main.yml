@@ -30,44 +30,20 @@
       api_password: "{{ api_password }}"
       validate_certs: "{{ validate_certs }}"
 
-- name: Volume1
+- name: Volume Creation
   netapp_e_volume:
     ssid: "{{ ssid }}"
     api_url: "{{ api_url }}"
     api_username: "{{ api_username }}"
     api_password: "{{ api_password }}"
     validate_certs: "{{ validate_certs }}"
-    name: Volume1
+    name: "{{ item }}"
     state: present
     storage_pool_name: Disk_Pool_SSD1
-    size: 2185
-    size_unit: gb
-
-- name: Volume2
-  netapp_e_volume:
-    ssid: "{{ ssid }}"
-    api_url: "{{ api_url }}"
-    api_username: "{{ api_username }}"
-    api_password: "{{ api_password }}"
-    validate_certs: "{{ validate_certs }}"
-    name: Volume2
-    state: present
-    storage_pool_name: Disk_Pool_SSD1
-    size: 2185
-    size_unit: gb
-
-- name: Volume3
-  netapp_e_volume:
-    ssid: "{{ ssid }}"
-    api_url: "{{ api_url }}"
-    api_username: "{{ api_username }}"
-    api_password: "{{ api_password }}"
-    validate_certs: "{{ validate_certs }}"
-    name: Volume3
-    state: present
-    storage_pool_name: Disk_Pool_SSD1
-    size: 2185
-    size_unit: gb
+    # TODO(lorenp): Dynamically figure out based on sizing
+    size: 25
+    size_unit: pct
+  with_sequence: start=0 end=3 format=Volume%02x
 
 - name: Host Ports
   netapp_e_host:
