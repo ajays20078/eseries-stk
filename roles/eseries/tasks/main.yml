@@ -1,7 +1,6 @@
 ---
 # Do some stuff on eseries array
 
-
 - name: Gather Facts
   netapp_e_facts:
     ssid: "{{ ssid }}"
