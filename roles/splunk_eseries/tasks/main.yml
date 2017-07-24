@@ -1,13 +1,4 @@
 ---
-# Do some stuff on eseries array
-
-- name: Gather Facts
-  netapp_e_facts:
-    ssid: "{{ ssid }}"
-    api_url: "{{ api_url }}"
-    api_username: "{{ api_username }}"
-    api_password: "{{ api_password }}"
-    validate_certs: "{{ validate_certs }}"
 
 - name: Gather Disk Facts
   netapp_e_disk_facts:
@@ -16,6 +7,7 @@
     api_username: "{{ api_username }}"
     api_password: "{{ api_password }}"
     validate_certs: "{{ validate_certs }}"
+
 
 - name: Disk_Pool_SSD1
   netapp_e_storagepool:
@@ -43,6 +35,15 @@
     state: present
     validate_certs: "{{ validate_certs }}"
 
+- name: Gather Facts
+  netapp_e_facts:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
+
+
 - name: Volume Creation
   netapp_e_volume:
     ssid: "{{ ssid }}"
@@ -53,12 +54,13 @@
     name: "{{ item.0['name'] }}_{{ hostvars[item.1]['ansible_nodename'] }}_VOL{{ item.2 }}"
     state: present
     storage_pool_name: "{{ item.0['name'] }}"
-    size: "{{ (100/ (groups['indexers'] | length * luns_per_host_per_DP)| round(0,'floor')) |int  }}"
+    size: "{{ (100/ (groups['splunk_indexers'] | length * luns_per_host_per_DP)| round(0,'floor')) |int  }}"
     size_unit: pct
   with_nested:
     - "{{ hostvars[inventory_hostname]['netapp_storage_pools'] }}"
-    - "{{ groups['indexers'] }}"
+    - "{{ groups['splunk_indexers'] }}"
     - "{{ lookup('sequence','start=0 end='+(luns_per_host_per_DP - 1)|string,wantlist=True) }}"
+
 
 - name: Host Ports
   netapp_e_host:
@@ -86,10 +88,9 @@
     target: "{{ hostvars[item.1]['ansible_nodename'] }}"
     target_type: host
     volume_name: "{{ item.0['name'] }}_{{ hostvars[item.1]['ansible_nodename'] }}_VOL{{ item.2 }}"
-    lun: "{{ item.2 }}"
   with_nested:
     - "{{ hostvars[inventory_hostname]['netapp_storage_pools'] }}"
-    - "{{ groups['indexers'] }}"
+    - "{{ groups['splunk_indexers'] }}"
     - "{{ lookup('sequence','start=0 end='+(luns_per_host_per_DP - 1)|string,wantlist=True) }}"
 
 - name: Display all variables/facts known for a host

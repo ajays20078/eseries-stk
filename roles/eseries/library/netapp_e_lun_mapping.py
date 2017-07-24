@@ -239,16 +239,24 @@ def get_lun_mappings(ssid, api_url, user, pwd, validate_certs, get_all=None):
 def create_mapping(module, ssid, lun_map, vol_name, api_url, user, pwd, validate_certs):
     mappings = 'storage-systems/%s/volume-mappings' % ssid
     url = api_url + mappings
-    post_body = json.dumps(dict(
-        mappableObjectId=lun_map['volumeRef'],
-        targetId=lun_map['mapRef'],
-        lun=lun_map['lun']
-    ))
+
+    if lun_map is not None:
+        post_body = json.dumps(dict(
+            mappableObjectId=lun_map['volumeRef'],
+            targetId=lun_map['mapRef'],
+            lun=lun_map['lun']
+        ))
+    else:
+        post_body = json.dumps(dict(
+            mappableObjectId=lun_map['volumeRef'],
+            targetId=lun_map['mapRef'],
+        ))
 
     rc, data = request(url, data=post_body, method='POST', url_username=user, url_password=pwd, headers=HEADERS,
                        ignore_errors=True, validate_certs=validate_certs)
 
-    if rc == 422:
+    if rc == 422 and lun_map['lun'] is not None:
+
         data = move_lun(module, ssid, lun_map, vol_name, api_url, user, pwd, validate_certs)
         # module.fail_json(msg="The volume you specified '%s' is already "
         #                      "part of a different LUN mapping. If you "
@@ -296,7 +304,7 @@ def main():
         state=dict(required=True, choices=['present', 'absent']),
         target=dict(required=False, default=None),
         target_type=dict(required=False, choices=['host', 'group']),
-        lun=dict(required=False, type='int', default=0),
+        lun=dict(required=False, type='int'),
         ssid=dict(required=False),
         volume_name=dict(required=True),
     ))

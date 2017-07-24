@@ -8,10 +8,11 @@
   roles:
     - fc_hosts
 
-- name: configure eseries
+- name: configure eseries for splunk
   any_errors_fatal: true
-  hosts: eseries
+  hosts: splunk_eseries
   connection: local
   remote_user: root
   roles:
-    - eseries
+    - splunk_eseries
+
