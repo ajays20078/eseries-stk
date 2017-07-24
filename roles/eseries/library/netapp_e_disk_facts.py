@@ -86,7 +86,7 @@ def main():
     api_url = p['api_url']
 
     facts = dict()
-    ansible_facts = {ssid: facts}
+    disk_facts = {}
 
     # fetch the list of drive objects
     try:
@@ -99,13 +99,13 @@ def main():
             msg="Failed to obtain facts from storage array with id [%s]. Error [%s]" % (ssid, str(error)))
 
     # Define a counter using a composite key of the media type (ssd, hdd), spindle speed, and the capacity
-    facts['disks_by_type'] = collections.Counter(
+    disk_facts['disks_by_type'] = collections.Counter(
         ["_".join([
             d['driveMediaType'], str(d['spindleSpeed']), str(d['rawCapacity'])
         ]) for d in resp]
     )
 
-    result = dict(ansible_facts=ansible_facts, changed=False)
+    result = dict(disk_facts=disk_facts, changed=False)
     module.exit_json(msg="Gathered facts for %s." % ssid, **result)
 
 

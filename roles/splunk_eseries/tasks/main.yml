@@ -8,6 +8,43 @@
     api_password: "{{ api_password }}"
     validate_certs: "{{ validate_certs }}"
 
+- name: Display all ansible_facts
+  debug:
+    var: hostvars[inventory_hostname]
+
+
+- name: Create Disk Pools
+  netapp_e_storagepool:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    criteria_drive_count: 12
+    criteria_drive_type: ssd
+    name: "DP_{{ item.tag }}"
+    raid_level: raidDiskPool
+    state: present
+    validate_certs: "{{ validate_certs }}"
+  with_items:
+    - "{{ hostvars[inventory_hostname]['disk_facts']['disks_by_type'] }}"
+  when: item >= 11
+
+
+- name: Exit if nothing to upgrade
+  fail: msg="Nothing to upgrade"
+
+
+- name: Display all ansible_facts
+  debug:
+    var: hostvars[inventory_hostname]
+
+- name: Exit if nothing to upgrade
+  fail: msg="Nothing to upgrade"
+
+
+
+
+
 
 - name: Disk_Pool_SSD1
   netapp_e_storagepool:
@@ -35,14 +72,13 @@
     state: present
     validate_certs: "{{ validate_certs }}"
 
-- name: Gather Facts
+- name: Refresh netapp_e_facts
   netapp_e_facts:
     ssid: "{{ ssid }}"
     api_url: "{{ api_url }}"
     api_username: "{{ api_username }}"
     api_password: "{{ api_password }}"
     validate_certs: "{{ validate_certs }}"
-
 
 - name: Volume Creation
   netapp_e_volume:
@@ -60,7 +96,6 @@
     - "{{ hostvars[inventory_hostname]['netapp_storage_pools'] }}"
     - "{{ groups['splunk_indexers'] }}"
     - "{{ lookup('sequence','start=0 end='+(luns_per_host_per_DP - 1)|string,wantlist=True) }}"
-
 
 - name: Host Ports
   netapp_e_host:
