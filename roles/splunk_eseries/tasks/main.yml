@@ -1,5 +1,13 @@
 ---
 
+- name: Gather Netapp Facts
+  netapp_e_facts:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
+
 - name: Gather Disk Facts
   netapp_e_disk_facts:
     ssid: "{{ ssid }}"
@@ -10,7 +18,11 @@
 
 - name: Display all ansible_facts
   debug:
-    var: hostvars[inventory_hostname]
+    var: hostvars[inventory_hostname]['1']
+
+- name: Display all disk_facts
+  debug:
+    var: hostvars[inventory_hostname]['disks_by_type']
 
 
 - name: Create Disk Pools
@@ -19,58 +31,16 @@
     api_url: "{{ api_url }}"
     api_username: "{{ api_username }}"
     api_password: "{{ api_password }}"
-    criteria_drive_count: 12
+    criteria_drive_count: "{{ item.count }}"
     criteria_drive_type: ssd
     name: "DP_{{ item.tag }}"
     raid_level: raidDiskPool
     state: present
     validate_certs: "{{ validate_certs }}"
   with_items:
-    - "{{ hostvars[inventory_hostname]['disk_facts']['disks_by_type'] }}"
-  when: item >= 11
+    - "{{ hostvars[inventory_hostname]['disks_by_type'] }}"
+  when: item.count >= 11
 
-
-- name: Exit if nothing to upgrade
-  fail: msg="Nothing to upgrade"
-
-
-- name: Display all ansible_facts
-  debug:
-    var: hostvars[inventory_hostname]
-
-- name: Exit if nothing to upgrade
-  fail: msg="Nothing to upgrade"
-
-
-
-
-
-
-- name: Disk_Pool_SSD1
-  netapp_e_storagepool:
-    ssid: "{{ ssid }}"
-    api_url: "{{ api_url }}"
-    api_username: "{{ api_username }}"
-    api_password: "{{ api_password }}"
-    criteria_drive_count: 12
-    criteria_drive_type: ssd
-    name: DP1
-    raid_level: raidDiskPool
-    state: present
-    validate_certs: "{{ validate_certs }}"
-
-- name: Disk_Pool_SSD2
-  netapp_e_storagepool:
-    ssid: "{{ ssid }}"
-    api_url: "{{ api_url }}"
-    api_username: "{{ api_username }}"
-    api_password: "{{ api_password }}"
-    criteria_drive_count: 12
-    criteria_drive_type: ssd
-    name: DP2
-    raid_level: raidDiskPool
-    state: present
-    validate_certs: "{{ validate_certs }}"
 
 - name: Refresh netapp_e_facts
   netapp_e_facts:
@@ -87,7 +57,7 @@
     api_username: "{{ api_username }}"
     api_password: "{{ api_password }}"
     validate_certs: "{{ validate_certs }}"
-    name: "{{ item.0['name'] }}_{{ hostvars[item.1]['ansible_nodename'] }}_VOL{{ item.2 }}"
+    name: "{{ item.0['name'] }}_{{ hostvars[item.1]['ansible_nodename'] }}_V{{ item.2 }}"
     state: present
     storage_pool_name: "{{ item.0['name'] }}"
     size: "{{ (100/ (groups['splunk_indexers'] | length * luns_per_host_per_DP)| round(0,'floor')) |int  }}"
@@ -107,7 +77,7 @@
     host_type_index: 28
     name: "{{ hostvars[item]['ansible_nodename'] }}"
     state: present
-    ports: 
+    ports:
       "{{ hostvars[item]['fc_ports'] }}"
   with_inventory_hostnames:
     - fc_hosts
@@ -122,7 +92,7 @@
     state: present
     target: "{{ hostvars[item.1]['ansible_nodename'] }}"
     target_type: host
-    volume_name: "{{ item.0['name'] }}_{{ hostvars[item.1]['ansible_nodename'] }}_VOL{{ item.2 }}"
+    volume_name: "{{ item.0['name'] }}_{{ hostvars[item.1]['ansible_nodename'] }}_V{{ item.2 }}"
   with_nested:
     - "{{ hostvars[inventory_hostname]['netapp_storage_pools'] }}"
     - "{{ groups['splunk_indexers'] }}"
