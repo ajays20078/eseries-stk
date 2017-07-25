@@ -335,8 +335,6 @@ class Host(object):
 
     def update_host(self):
         if self.ports:
-            # Why check for available ports when updating?
-            # if self.hostports_available:
             if self.force_port_update is True:
                 self.reassign_ports(apply=False)
                 # Make sure that only ports that arent being reassigned are passed into the ports attr
@@ -356,7 +354,7 @@ class Host(object):
         except:
             err = get_exception()
 
-            self.module.fail_json(msg="Failed to update host. post_body [%s]. Array Id [%s]. Error [%s]." % (json.dumps(self.post_body), self.ssid, str(err)))
+            self.module.fail_json(msg="Failed to update host. Array Id [%s]. Error [%s]." % (self.ssid, str(err)))
 
         self.module.exit_json(changed=True, **self.host_obj)
 

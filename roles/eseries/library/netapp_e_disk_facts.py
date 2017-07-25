@@ -86,7 +86,6 @@ def main():
     api_url = p['api_url']
 
     facts = dict()
-    #ansible_facts = {ssid: facts}
 
     # fetch the list of drive objects
     try:
