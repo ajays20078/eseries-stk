@@ -7,6 +7,7 @@
   remote_user: root
   roles:
     - fc_hosts
+  tags: fc_hosts
 
 - name: configure eseries for splunk
   any_errors_fatal: true
@@ -15,4 +16,12 @@
   remote_user: root
   roles:
     - splunk_eseries
+  tags: splunk_eseries
 
+- name: configure splunk indexers
+  any_errors_fatal: true
+  hosts: splunk_indexers
+  remote_user: root
+  roles:
+    - splunk_indexers
+  tags: splunk_indexers

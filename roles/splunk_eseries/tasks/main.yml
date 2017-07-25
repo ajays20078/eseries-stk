@@ -1,5 +1,9 @@
 ---
 
+- name: Set API URL
+  set_fact:
+    api_url: "https://{{ hostvars[inventory_hostname]['inventory_hostname'] }}:8443/devmgr/v2"
+
 - name: Gather Netapp Facts
   netapp_e_facts:
     ssid: "{{ ssid }}"
@@ -16,15 +20,6 @@
     api_password: "{{ api_password }}"
     validate_certs: "{{ validate_certs }}"
 
-- name: Display all ansible_facts
-  debug:
-    var: hostvars[inventory_hostname]['1']
-
-- name: Display all disk_facts
-  debug:
-    var: hostvars[inventory_hostname]['disks_by_type']
-
-
 - name: Create Disk Pools
   netapp_e_storagepool:
     ssid: "{{ ssid }}"
@@ -40,7 +35,6 @@
   with_items:
     - "{{ hostvars[inventory_hostname]['disks_by_type'] }}"
   when: item.count >= 11
-
 
 - name: Refresh netapp_e_facts
   netapp_e_facts:
@@ -97,8 +91,3 @@
     - "{{ hostvars[inventory_hostname]['netapp_storage_pools'] }}"
     - "{{ groups['splunk_indexers'] }}"
     - "{{ lookup('sequence','start=0 end='+(luns_per_host_per_DP - 1)|string,wantlist=True) }}"
-
-- name: Display all variables/facts known for a host
-  debug:
-    var: hostvars[inventory_hostname]['netapp_storage_pools']
-

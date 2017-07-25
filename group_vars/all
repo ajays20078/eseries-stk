@@ -1,8 +1,7 @@
 ---
-ssid: 1
-api_url: https://10.113.1.28:8443/devmgr/v2
 
-api_username: rw
+ssid: 1
+api_username: admin@local
 api_password: infiniti
 validate_certs: False
 luns_per_host_per_DP: 2
