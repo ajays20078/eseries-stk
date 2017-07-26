@@ -1,0 +1,93 @@
+---
+
+- name: Set API URL
+  set_fact:
+    api_url: "https://{{ hostvars[inventory_hostname]['inventory_hostname'] }}:8443/devmgr/v2"
+
+- name: Gather Netapp Facts
+  netapp_e_facts:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
+
+- name: Gather Disk Facts
+  netapp_e_disk_facts:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
+
+- name: Create Disk Pools
+  netapp_e_storagepool:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    criteria_drive_count: "{{ item.count }}"
+    criteria_drive_type: ssd
+    name: "DP_{{ item.tag }}"
+    raid_level: raidDiskPool
+    state: present
+    validate_certs: "{{ validate_certs }}"
+  with_items:
+    - "{{ hostvars[inventory_hostname]['disks_by_type'] }}"
+  when: item.count >= 11
+
+- name: Refresh netapp_e_facts
+  netapp_e_facts:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
+
+- name: Volume Creation
+  netapp_e_volume:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
+    name: "{{ item.0['name'] }}_{{ hostvars[item.1]['ansible_nodename'] }}_V{{ item.2 }}"
+    state: present
+    storage_pool_name: "{{ item.0['name'] }}"
+    size: "{{ (100/ (groups['splunk_indexers'] | length * luns_per_host_per_DP)| round(0,'floor')) |int  }}"
+    size_unit: pct
+  with_nested:
+    - "{{ hostvars[inventory_hostname]['netapp_storage_pools'] }}"
+    - "{{ groups['splunk_indexers'] }}"
+    - "{{ lookup('sequence','start=0 end='+(luns_per_host_per_DP - 1)|string,wantlist=True) }}"
+
+- name: Host Ports
+  netapp_e_host:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
+    host_type_index: 28
+    name: "{{ hostvars[item]['ansible_nodename'] }}"
+    state: present
+    ports:
+      "{{ hostvars[item]['fc_ports'] }}"
+  with_inventory_hostnames:
+    - fc_hosts
+
+- name: Map Volumes
+  netapp_e_lun_mapping:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    validate_certs: "{{ validate_certs }}"
+    state: present
+    target: "{{ hostvars[item.1]['ansible_nodename'] }}"
+    target_type: host
+    volume_name: "{{ item.0['name'] }}_{{ hostvars[item.1]['ansible_nodename'] }}_V{{ item.2 }}"
+  with_nested:
+    - "{{ hostvars[inventory_hostname]['netapp_storage_pools'] }}"
+    - "{{ groups['splunk_indexers'] }}"
+    - "{{ lookup('sequence','start=0 end='+(luns_per_host_per_DP - 1)|string,wantlist=True) }}"

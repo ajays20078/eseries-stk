@@ -1,36 +1,50 @@
-
-easy-button
+Eseries Solution ToolKit (ESTK)
 
 ========
 
-This repository contains ansible playbooks that assist in configuring NetApp Eseries and attached hsots
+This repository contains ansible playbooks that assist in configuring NetApp Eseries and attached hosts
 
 #### Table of Contents
 
   1. [Disclaimer](#disclaimer)
   2. [Overview](#overview)
-  3. [Getting Started](#gettingstarted)
+  3. [Requirements](#requirements)
+  4. [To Docker or Not to Docker](#todockerornottodocker)
+  5. [Getting Started](#gettingstarted)
 
 ## Disclaimer
 
 These Ansible playbooks are written as best effort and provide no warranties or SLAs, expressed or implied. 
-# TODO Support statement
-
-
+##TODO Recommended/tested control server distro?
+##TODO Recommended/tested hosts?
+##TODO tested/supported santricity versions?
+##TODO Support statement
 
 
 ## Overview
 
-These Ansible playbooks are modular in nature and depending on what is defined in your hsots file, a small 
-portion of the overall code will be used.
+These Ansible playbooks are modular in nature and depending on what is defined in your hosts file, a small 
+portion of the overall playbooks will be used.
 
+## Requirements
+
+It is recommended to have SSH keys setup prior to installation. 
+Package installers (apt,yum etc...) need to be configured.  
+##TODO package requirements. ansbile handle it?
+
+## To docker or not to docker?
+To docker workflow:
+## TODO Commands to download and run docker image
+ 
+Not to Docker Workflow:
+1. git clone ansible in correct directory
+2. Git clone TODO http git package
+3. ##TODO control server package requirements?
+4. 
 
 ## Getting Started 
 
-Host and ESeries targets are currently supported.  Hosts are defined in the host file.  It is recommended 
-to have SSH keys setup prior to installatoin.  Due to ESeries arrays not having an SSH shell, Eseries 
-arrays are defined in the group_vars/eseries file.  "host" file should have [eseries] defined with 
-127.0.0.1 defined as IP.
-
-
+1. Set your ip addresses for your roles in the hosts file. Each role is a set of specific tasks and one host can be a part of several roles.
+2. For Eseries arrays, just use the ip address for the first controller.  
+3. For Eseries arrays, set your user/pass for Eseries (api_username, api_password) in ./group_vars/all file.  BETTER WAY FOR THIS?
 
