@@ -168,7 +168,8 @@ def get_host_and_group_map(module, ssid, api_url, user, pwd, validate_certs):
     hosts = 'storage-systems/%s/hosts' % ssid
     hosts_url = api_url + hosts
     try:
-        h_rc, h_data = request(hosts_url, headers=HEADERS, url_username=user, url_password=pwd)
+        h_rc, h_data = request(hosts_url, headers=HEADERS, url_username=user, url_password=pwd,
+                                 validate_certs=validate_certs)
     except:
         err = get_exception()
         module.fail_json(msg="Failed to get hosts. Id [%s]. Error [%s]" % (ssid, str(err)))
@@ -208,11 +209,11 @@ def get_hostgroups(module, ssid, api_url, user, pwd, validate_certs):
                              "endpoint is properly defined and your credentials are correct")
 
 
-def get_volumes(module, ssid, api_url, user, pwd, mappable):
+def get_volumes(module, ssid, api_url, user, pwd, mappable, validate_certs):
     volumes = 'storage-systems/%s/%s' % (ssid, mappable)
     url = api_url + volumes
     try:
-        rc, data = request(url, url_username=user, url_password=pwd)
+        rc, data = request(url, url_username=user, url_password=pwd, validate_certs=validate_certs)
     except Exception:
         err = get_exception()
         module.fail_json(
@@ -238,16 +239,24 @@ def get_lun_mappings(ssid, api_url, user, pwd, validate_certs, get_all=None):
 def create_mapping(module, ssid, lun_map, vol_name, api_url, user, pwd, validate_certs):
     mappings = 'storage-systems/%s/volume-mappings' % ssid
     url = api_url + mappings
-    post_body = json.dumps(dict(
-        mappableObjectId=lun_map['volumeRef'],
-        targetId=lun_map['mapRef'],
-        lun=lun_map['lun']
-    ))
+
+    if lun_map is not None:
+        post_body = json.dumps(dict(
+            mappableObjectId=lun_map['volumeRef'],
+            targetId=lun_map['mapRef'],
+            lun=lun_map['lun']
+        ))
+    else:
+        post_body = json.dumps(dict(
+            mappableObjectId=lun_map['volumeRef'],
+            targetId=lun_map['mapRef'],
+        ))
 
     rc, data = request(url, data=post_body, method='POST', url_username=user, url_password=pwd, headers=HEADERS,
                        ignore_errors=True, validate_certs=validate_certs)
 
-    if rc == 422:
+    if rc == 422 and lun_map['lun'] is not None:
+
         data = move_lun(module, ssid, lun_map, vol_name, api_url, user, pwd, validate_certs)
         # module.fail_json(msg="The volume you specified '%s' is already "
         #                      "part of a different LUN mapping. If you "
@@ -258,7 +267,7 @@ def create_mapping(module, ssid, lun_map, vol_name, api_url, user, pwd, validate
 
 
 def move_lun(module, ssid, lun_map, vol_name, api_url, user, pwd, validate_certs):
-    lun_id = get_lun_id(module, ssid, lun_map, api_url, user, pwd)
+    lun_id = get_lun_id(module, ssid, lun_map, api_url, user, pwd, validate_certs)
     move_lun = "storage-systems/%s/volume-mappings/%s/move" % (ssid, lun_id)
     url = api_url + move_lun
     post_body = json.dumps(dict(targetId=lun_map['mapRef'], lun=lun_map['lun']))
@@ -295,7 +304,7 @@ def main():
         state=dict(required=True, choices=['present', 'absent']),
         target=dict(required=False, default=None),
         target_type=dict(required=False, choices=['host', 'group']),
-        lun=dict(required=False, type='int', default=0),
+        lun=dict(required=False, type='int'),
         ssid=dict(required=False),
         volume_name=dict(required=True),
     ))
@@ -316,8 +325,8 @@ def main():
     if not api_url.endswith('/'):
         api_url += '/'
 
-    volume_map = get_volumes(module, ssid, api_url, user, pwd, "volumes")
-    thin_volume_map = get_volumes(module, ssid, api_url, user, pwd, "thin-volumes")
+    volume_map = get_volumes(module, ssid, api_url, user, pwd, "volumes", validate_certs)
+    thin_volume_map = get_volumes(module, ssid, api_url, user, pwd, "thin-volumes", validate_certs)
     volref = None
 
     for vol in volume_map:
@@ -340,7 +349,7 @@ def main():
         volumeRef=volref
     )
 
-    lun_mappings = get_lun_mappings(ssid, api_url, user, pwd)
+    lun_mappings = get_lun_mappings(ssid, api_url, user, pwd, validate_certs)
 
     if state == 'present':
         if desired_lun_mapping in lun_mappings:

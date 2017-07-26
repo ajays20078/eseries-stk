@@ -1,0 +1,27 @@
+---
+# This playbook deploys the whole application stack in this site.
+
+- name: configure fc_hosts
+  any_errors_fatal: true
+  hosts: fc_hosts
+  remote_user: root
+  roles:
+    - fc_hosts
+  tags: fc_hosts
+
+- name: configure eseries for splunk
+  any_errors_fatal: true
+  hosts: splunk_eseries
+  connection: local
+  remote_user: root
+  roles:
+    - splunk_eseries
+  tags: splunk_eseries
+
+- name: configure splunk indexers
+  any_errors_fatal: true
+  hosts: splunk_indexers
+  remote_user: root
+  roles:
+    - splunk_indexers
+  tags: splunk_indexers
