@@ -4,4 +4,4 @@ ssid: 1
 api_username: admin@local
 api_password: infiniti
 validate_certs: False
-luns_per_host_per_DP: 2
+luns_per_host_per_DP: 1
