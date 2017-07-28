@@ -1,0 +1,40 @@
+---
+- name: SANtricity Pool
+  hosts: local
+  gather_facts: False
+  connection: local
+
+  vars:
+    #test parameters
+    pool_name: testa
+    raid_level: raid1
+    state: present
+    volume_name:  testa
+    drive_count:  4
+
+    # array specific variables
+    api_ip:  10.113.174.187
+
+    # common defaults
+    api_username: admin@local
+    api_password: infiniti
+
+    # usually constant
+    ssid: 1
+    api_url: https://{{ api_ip }}/devmgr/v2
+    validate_certs: False
+
+  tasks:
+    - name: Make Disk Group
+      netapp_e_storagepool:
+        ssid: "{{ ssid }}"
+        api_url: "{{ api_url }}"
+        api_username: "{{ api_username }}"
+        api_password: "{{ api_password }}"
+        name: "{{ pool_name }}"
+        raid_level: "{{ raid_level }}"
+        state: "{{ state }}"
+        criteria_drive_count: {{ drive_count }}
+        validate_certs: "{{ validate_certs}}"
+        log_path: /tmp/volume.log
+ 

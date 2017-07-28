@@ -1,0 +1,38 @@
+---
+- name: Netapp Eseries Facts
+  hosts: local
+  gather_facts: False
+  connection: local
+
+  vars:
+    # array specific variables
+    api_ip:  10.113.174.187
+
+    # common defaults
+    api_username: admin@local
+    api_password: infiniti
+
+    # usually constant
+    ssid: 1
+    api_url: https://{{ api_ip }}/devmgr/v2
+    validate_certs: False
+
+  tasks:
+    - name: Gather Facts
+      netapp_e_facts:
+        ssid: "{{ ssid }}"
+        api_url: "{{ api_url }}"
+        api_username: "{{ api_username }}"
+        api_password: "{{ api_password }}"
+        validate_certs: "{{ validate_certs}}"
+        
+    - name:  Print Storage Pools
+      debug:  msg="Pool name is {{ item.name }}"
+      with_items: "{{ netapp_storage_pools }}"
+
+    - name:  Print Volumes
+      debug:  msg="Volume name is {{ item.name }}"
+      with_items: "{{ netapp_volumes }}"          
+
+
+ #openssl s_client -connect {HOSTNAME}:{PORT} -showcerts
