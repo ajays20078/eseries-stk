@@ -1,4 +1,5 @@
 #!/bin/sh
+
 # bail if any io-mnt exists
 disk_mount_flags="nobarrier,_netdev,discard"
 mnts=`ls /mnt/`

@@ -1,5 +1,10 @@
 ---
 
+- name: DEBUG SOME STUFF
+  debug:
+    var: hostvars[inventory_hostname]
+
+
 - name: Set API URL
   set_fact:
     api_url: "https://{{ hostvars[inventory_hostname]['inventory_hostname'] }}:8443/devmgr/v2"

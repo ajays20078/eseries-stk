@@ -1,12 +1,13 @@
 [splunk_eseries]
-10.113.1.28
+#10.113.1.188 eseries_iscsi_ip=192.168.1.100 api_username=admin@local api_password=infiniti
 
 [fc_hosts]
-10.113.1.78 ansible_user=root ansible_ssh_pass=infiniti
-10.113.1.79 ansible_user=root ansible_ssh_pass=infiniti
+
 
 [splunk_indexers]
-10.113.1.78 ansible_user=root ansible_ssh_pass=infiniti
-10.113.1.79 ansible_user=root ansible_ssh_pass=infiniti
+#10.113.1.78 ansible_user=root ansible_ssh_pass=infiniti
+#10.113.1.79 ansible_user=root ansible_ssh_pass=infiniti
 
 [iscsi_hosts]
+10.113.1.78 ansible_user=root ansible_ssh_pass=infiniti eseries_iscsi_ip=192.168.1.100
+10.113.1.79 ansible_user=root ansible_ssh_pass=infiniti eseries_iscsi_ip=192.168.1.100

@@ -9,6 +9,14 @@
     - fc_hosts
   tags: fc_hosts
 
+- name: configure iscsi_hosts
+  any_errors_fatal: true
+  hosts: iscsi_hosts
+  remote_user: root
+  roles:
+    - iscsi_hosts
+  tags: iscsi_hosts
+
 - name: configure eseries for splunk
   any_errors_fatal: true
   hosts: splunk_eseries

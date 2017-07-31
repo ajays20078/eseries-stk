@@ -1,17 +1,36 @@
 ---
 
-- name: Verify DMMP
+- name: Verify DMMP Service
   service: name=multipathd state=started
 
-- name: WWN
-  shell: cat /sys/class/fc_host/host*/port_name | cut -c 3-
-  register: wwn
-  tags: wwn
+- name: Verify iSCSI Package
+  package:
+    name: iscsi-initiator-utils
 
-- name: Gather FC ports
-  set_fact:
-    fc_ports: "{{ fc_ports| default([])  + [ {'type': 'fc' , 'label':item , 'port':item } ]}}"
-  with_items:
-    - "{{ wwn.stdout_lines }}"
-  when: wwn.stdout_lines is defined
+- name: Verify iSCSI Service
+  service: name=iscsid state=started enabled=yes
+
+#- name: Creates directory
+#  file: path=/opt/netapp state=directory  mode=0775
+
+#- name: Install Linux iSCSI Script
+#  copy: src=linux_iscsi.sh dest=/opt/netapp mode=0775
+
+#- name: Run Linux iSCSI script
+#  shell: "/opt/netapp/linux_iscsi.sh -p {{ eseries_iscsi_ip }}"
+
+# perform a discovery on 10.1.2.3 and show available target nodes
+#- open_iscsi:
+#    show_nodes: yes
+#    discover: yes
+#    portal: 192.168.1.100
+
+- open_iscsi:
+    portal: 192.168.1.100
+    login: yes
+    discover: yes
+    show_nodes: True
+    auto_node_startup: True
+
+
 
