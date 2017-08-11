@@ -6,7 +6,7 @@ fs_type=xfs
 
 for mnt in $mnts; do
     if [[ $mnt == *"netapp-mnt"* ]]; then
-        # bail if io-mnt exists
+        # bail if netapp-mnt exists
         exit 0
     fi
 done

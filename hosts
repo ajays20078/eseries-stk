@@ -1,9 +1,18 @@
-[splunk_eseries]
-10.113.1.28
-
 [fc_hosts]
+#10.113.1.78 ansible_user=root ansible_ssh_pass=infiniti
+#10.113.1.79 ansible_user=root ansible_ssh_pass=infiniti
+
+[sas_hosts]
 10.113.1.78 ansible_user=root ansible_ssh_pass=infiniti
 10.113.1.79 ansible_user=root ansible_ssh_pass=infiniti
+
+[iscsi_hosts]
+
+[splunk_eseries]
+#Sandhawk
+10.113.1.221
+#Arapaho
+#10.113.1.28
 
 [splunk_indexers]
 10.113.1.78 ansible_user=root ansible_ssh_pass=infiniti
