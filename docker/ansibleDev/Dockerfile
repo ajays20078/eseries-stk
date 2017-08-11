@@ -1,6 +1,10 @@
-FROM python:2.7
+ARG PYTHON_VERSION=2.7
+FROM python:${PYTHON_VERSION}
 
-WORKDIR /home/
+ARG ANSIBLE_BRANCH=origin/devel
+ARG ANSIBLE_REPO=https://github.com/ansible/ansible
+
+WORKDIR /home
 
 RUN apt-get update && apt-get install -y \
     sshpass \
@@ -8,10 +12,12 @@ RUN apt-get update && apt-get install -y \
 
 ENV ANSIBLE_HOST_KEY_CHECKING=False
 
-RUN pip install ansible
-
+#RUN pip install ansible
+RUN git clone ${ANSIBLE_REPO} --recursive /opt/ansible
+RUN cd /opt/ansible && git checkout ${ANSIBLE_BRANCH}
+RUN pip install --upgrade -r /opt/ansible/requirements.txt
+RUN cd /opt/ansible && python /opt/ansible/setup.py install
 #Assuming that this file exists, it will mark our local ansible hosts file
 # as the default for any ansible-playbook invocations
 RUN mkdir -p /etc/ansible && ln -s /home/hosts /etc/ansible/hosts
-
 ENTRYPOINT ["/bin/bash"]
