@@ -1,22 +1,12 @@
 #!/usr/bin/python
 
 # (c) 2016, NetApp, Inc
-#
-# This file is part of Ansible
-#
-# Ansible is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ansible is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
-#
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
+
+
 ANSIBLE_METADATA = {'metadata_version': '1.0',
                     'status': ['preview'],
                     'supported_by': 'community'}
@@ -353,7 +343,6 @@ class Host(object):
                                           validate_certs=self.certs, method='POST', data=json.dumps(self.post_body))
         except:
             err = get_exception()
-
             self.module.fail_json(msg="Failed to update host. Array Id [%s]. Error [%s]." % (self.ssid, str(err)))
 
         self.module.exit_json(changed=True, **self.host_obj)
@@ -365,10 +354,10 @@ class Host(object):
             groupId=self.group_id,
             ports=self.ports
         )
-
         if self.ports:
             # Check that all supplied port args are valid
-            if self.hostports_available:
+            # if self.hostports_available:
+            if 1:
                 post_body.update(ports=self.ports)
             elif not self.force_port:
                 self.module.fail_json(

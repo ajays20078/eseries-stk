@@ -50,7 +50,7 @@
     validate_certs: "{{ validate_certs }}"
   with_items:
     - "{{ hostvars[inventory_hostname]['disks_by_type'] }}"
-  when: item.count >= 11 and "'hdd' in item"
+  when: item.count >= 11 and item == '*hdd*'
 
 - name: Refresh netapp_e_facts
   netapp_e_facts:
@@ -91,9 +91,6 @@
       "{{ hostvars[item]['fc_ports'] }}"
   with_inventory_hostnames:
     - fc_hosts
-
-- debug:
-    msg: "{{ hostvars['10.113.1.79']['sas_ports'] }}"
 
 - name: SAS Host Ports
   netapp_e_host:
