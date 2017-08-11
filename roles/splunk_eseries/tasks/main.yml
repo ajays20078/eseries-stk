@@ -34,7 +34,7 @@
     validate_certs: "{{ validate_certs }}"
   with_items:
     - "{{ hostvars[inventory_hostname]['disks_by_type'] }}"
-  when: item.count >= 11 and item == '*ssd*'
+  when: item.count >= 11 and item.tag | match("ssd")
 
 - name: Create HDD Disk Pools
   netapp_e_storagepool:
@@ -50,7 +50,7 @@
     validate_certs: "{{ validate_certs }}"
   with_items:
     - "{{ hostvars[inventory_hostname]['disks_by_type'] }}"
-  when: item.count >= 11 and item == '*hdd*'
+  when: item.count >= 11 and item.tag | match("hdd")
 
 - name: Refresh netapp_e_facts
   netapp_e_facts:
