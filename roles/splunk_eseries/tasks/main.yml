@@ -104,6 +104,7 @@
     state: present
     ports:
       "{{ hostvars[item]['sas_ports'] }}"
+    force_port: True
   with_inventory_hostnames:
     - sas_hosts
 

@@ -356,8 +356,7 @@ class Host(object):
         )
         if self.ports:
             # Check that all supplied port args are valid
-            # if self.hostports_available:
-            if 1:
+            if self.hostports_available:
                 post_body.update(ports=self.ports)
             elif not self.force_port:
                 self.module.fail_json(
