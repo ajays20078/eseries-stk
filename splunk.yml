@@ -9,6 +9,14 @@
     - fc_hosts
   tags: fc_hosts
 
+- name: configure sas_hosts
+  any_errors_fatal: true
+  hosts: sas_hosts
+  remote_user: root
+  roles:
+    - sas_hosts
+  tags: sas_hosts
+
 - name: configure eseries for splunk
   any_errors_fatal: true
   hosts: splunk_eseries

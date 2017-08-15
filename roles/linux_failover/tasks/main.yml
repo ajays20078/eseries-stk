@@ -1,0 +1,7 @@
+---
+
+- name: Install DMMP package
+  package: name=device-mapper-multipath state=latest
+
+- name: Verify DMMP state
+  service: name=multipathd state=started

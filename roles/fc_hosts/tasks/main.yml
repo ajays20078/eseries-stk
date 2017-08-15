@@ -1,14 +1,14 @@
 ---
 
-- name: Verify DMMP
-  service: name=multipathd state=started
+- include_role:
+    name: linux_failover
 
 - name: WWN
   shell: cat /sys/class/fc_host/host*/port_name | cut -c 3-
   register: wwn
   tags: wwn
 
-- name: Gather FC ports
+- name: Set FC ports
   set_fact:
     fc_ports: "{{ fc_ports| default([])  + [ {'type': 'fc' , 'label':item , 'port':item } ]}}"
   with_items:
