@@ -10,17 +10,27 @@ This repository contains ansible playbooks that assist in configuring NetApp Ese
   2. [Overview](#overview)
   3. [Requirements](#requirements)
   4. [To Docker or Not to Docker](#todockerornottodocker)
-  5. [Getting Started](#gettingstarted)
+  5. [TODOs and Future plans](#TODOsandFutureplans)
 
 ## Disclaimer
 
-These Ansible playbooks are written as best effort and provide no warranties or SLAs, expressed or implied. 
-##TODO Recommended/tested control server distro?
-##TODO Recommended/tested hosts?
-##TODO tested/supported santricity versions?
-##TODO Support statement
+These Ansible playbooks are written as best effort and provide no warranties or SLAs, expressed or implied. ##TODO Support statement
 
+Tested control server distros
 
+  1.  Windows 10 with Docker
+  2.  Ubuntu 14 and 16
+  3.  ##TODO Recommended/tested control server distro?
+
+Tested host distributions
+
+  1.  ##TODO Recommended/tested hosts?
+  
+Tested Santricity versions
+
+  1.  ##TODO tested/supported santricity versions?
+  
+  
 ## Overview
 
 These Ansible playbooks are modular in nature and depending on what is defined in your hosts file, a small 
@@ -33,18 +43,68 @@ Package installers (apt,yum etc...) need to be configured.
 ##TODO package requirements. ansbile handle it?
 
 ## To docker or not to docker?
-To docker workflow:
-## TODO Commands to download and run docker image
+To use the docker workflow:
+
+  1. Download docker/ansibleDev/dockerfile 
+
+  2. Run the docker file with the following commands:
+    * docker build -t dev
+    * docker run --rm -it -v ${PWD}:/home dev
+
+  3. From inside the docker image, clone the git repository:
+    * cd /home
+    * git clone https://github.com/NetApp/easy-button
+
+  4. Fill out /home/easy-button directory/hosts.  The containing directory also appears outside of the docker image of the directory it was started in.
+    * splunk_eseries:  Any array that should be provisioned for splunk.
+	* fc_hosts:  Host servers that are connected to the array via the host channels
+	* splunk_indexers:  Index servers that splunk is being deployed on.  These may be the same as other roles, or different.
+
  
-Not to Docker Workflow:
-1. git clone ansible in correct directory
-2. Git clone TODO http git package
-3. ##TODO control server package requirements?
-4. 
+  5. Fill out /home/easy-button/group_vars/all.
+    *  For Eseries arrays, just use the ip address for the first controller.
+    *  For Eseries arrays, set your user/pass for Eseries (api_username, api_password) in ./group_vars/all file.
+	
+  6. Run the Ansible playbook with the following command:
+    * cd /home/easy-button/
+	* cp -r roles /home
+	* cp -r hosts /home
+    * ansible-playbook splunk.yml --vvv
 
-## Getting Started 
+If you don't won't to use the docker workflow, and have a Unix host, you can do the following:
+ 
+ 1.  Verify that you have the following packages installed:
+    *  Python 2.7.6
+	*  Ansible 2.3.2.0
+	*  Git
+    *  The following packages may also be required
+	   *  software-properties-common
+	   *  python-software-properties
+	   *  software-properties-common
+       *  gcc
+	   *  build-essential   
+	   *  libssl-dev   
+	   *  libffi-dev python-dev
+       *  make  
+	
+ 2.  Clone the git repository:
+    * git clone https://github.com/NetApp/easy-button
+  
+ 3.  Update ansible.cfg with the path to the roles/eseries/library directory
+ 
+ 4. Fill out /home/easy-button directory/hosts.  The containing directory also appears outside of the docker image of the directory it was started in.
+    * splunk_eseries:  Any array that should be provisioned for splunk.
+	* fc_hosts:  Host servers that are connected to the array via the host channels
+	* splunk_indexers:  Index servers that splunk is being deployed on.  These may be the same as other roles, or different.
+  
+ 5. Fill out /home/easy-button/group_vars/all.
+    *  For Eseries arrays, just use the ip address for the first controller.
+    *  For Eseries arrays, set your user/pass for Eseries (api_username, api_password) in ./group_vars/all file.
 
-1. Set your ip addresses for your roles in the hosts file. Each role is a set of specific tasks and one host can be a part of several roles.
-2. For Eseries arrays, just use the ip address for the first controller.  
-3. For Eseries arrays, set your user/pass for Eseries (api_username, api_password) in ./group_vars/all file.  BETTER WAY FOR THIS?
+ 6. Run the Ansible playbook with the following command:
+    * ansible-playbook splunk.yml --vvv
 
+## TODOs and Future plans
+
+1.  Find a better way to pass in array IP addreses and passwords other than group_vars/all
+2.  Having Ansible handling the packaging requirements.
