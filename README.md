@@ -14,22 +14,26 @@ This repository contains ansible playbooks that assist in configuring NetApp Ese
 
 ## Disclaimer
 
-These Ansible playbooks are written as best effort and provide no warranties or SLAs, expressed or implied. ##TODO Support statement
+These Ansible playbooks are written as best effort and provide no warranties or SLAs, expressed or implied.
 
 Tested control server distros
 
   1.  Windows 10 with Docker
-  2.  Ubuntu 14 and 16
-  3.  ##TODO Recommended/tested control server distro?
+  2.  Centos 7.3
 
 Tested host distributions
 
-  1.  ##TODO Recommended/tested hosts?
+  1.  Centos 7.3
+  
+Future planned control and host distributions
+
+  1.  SLES
+  2.  Ubuntu 16
+  3.  RHEL
   
 Tested Santricity versions
 
-  1.  ##TODO tested/supported santricity versions?
-  
+  1.  98.40.00.08  
   
 ## Overview
 
@@ -40,7 +44,6 @@ portion of the overall playbooks will be used.
 
 It is recommended to have SSH keys setup prior to installation. 
 Package installers (apt,yum etc...) need to be configured.  
-##TODO package requirements. ansbile handle it?
 
 ## To docker or not to docker?
 To use the docker workflow:
@@ -108,3 +111,4 @@ If you don't won't to use the docker workflow, and have a Unix host, you can do 
 
 1.  Find a better way to pass in array IP addreses and passwords other than group_vars/all
 2.  Having Ansible handling the packaging requirements.
+3.  Expand host and control server types to Ubuntu, Redhat, and SLES
