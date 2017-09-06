@@ -28,13 +28,29 @@
     api_password: "{{ api_password }}"
     criteria_drive_count: "{{ item.count }}"
     criteria_drive_type: ssd
-    name: "DP_Hot"
+    name: "DP_SSD"
     raid_level: raidDiskPool
     state: present
     validate_certs: "{{ validate_certs }}"
   with_items:
     - "{{ hostvars[inventory_hostname]['disks_by_type'] }}"
   when: item.count >= 11 and item.tag | match("ssd")
+
+- name: Create 10K Disk Pools
+  netapp_e_storagepool:
+    ssid: "{{ ssid }}"
+    api_url: "{{ api_url }}"
+    api_username: "{{ api_username }}"
+    api_password: "{{ api_password }}"
+    criteria_drive_count: "{{ item.count }}"
+    criteria_drive_type: ssd
+    name: "DP_10K"
+    raid_level: raidDiskPool
+    state: present
+    validate_certs: "{{ validate_certs }}"
+  with_items:
+    - "{{ hostvars[inventory_hostname]['disks_by_type'] }}"
+  when: item.count >= 11 and item.tag | match("hdd_10")
 
 - name: Create HDD Disk Pools
   netapp_e_storagepool:
@@ -44,13 +60,13 @@
     api_password: "{{ api_password }}"
     criteria_drive_count: "{{ item.count }}"
     criteria_drive_type: hdd
-    name: "DP_Cold"
+    name: "DP_NL"
     raid_level: raidDiskPool
     state: present
     validate_certs: "{{ validate_certs }}"
   with_items:
     - "{{ hostvars[inventory_hostname]['disks_by_type'] }}"
-  when: item.count >= 11 and item.tag | match("hdd")
+  when: item.count >= 11 and item.tag | match("hdd_7")
 
 - name: Refresh netapp_e_facts
   netapp_e_facts:
@@ -70,11 +86,11 @@
     name: "{{ item.0['name'] }}_{{ hostvars[item.1]['ansible_nodename'] }}_V{{ item.2 }}"
     state: present
     storage_pool_name: "{{ item.0['name'] }}"
-    size: "{{ (100/ (groups['splunk_indexers'] | length * luns_per_host_per_DP)| round(0,'floor')) |int  }}"
+    size: "{{ (100/ (groups['splunk_eseries'] | length * luns_per_host_per_DP)| round(0,'floor')) |int  }}"
     size_unit: pct
   with_nested:
     - "{{ hostvars[inventory_hostname]['netapp_storage_pools'] }}"
-    - "{{ groups['splunk_indexers'] }}"
+    - "{{ groups['splunk_eseries'] }}"
     - "{{ lookup('sequence','start=0 end='+(luns_per_host_per_DP - 1)|string,wantlist=True) }}"
 
 - name: Fibre Host Ports
@@ -121,5 +137,5 @@
     volume_name: "{{ item.0['name'] }}_{{ hostvars[item.1]['ansible_nodename'] }}_V{{ item.2 }}"
   with_nested:
     - "{{ hostvars[inventory_hostname]['netapp_storage_pools'] }}"
-    - "{{ groups['splunk_indexers'] }}"
+    - "{{ groups['IO_hosts'] }}"
     - "{{ lookup('sequence','start=0 end='+(luns_per_host_per_DP - 1)|string,wantlist=True) }}"
