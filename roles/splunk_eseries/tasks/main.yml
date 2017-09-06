@@ -28,7 +28,7 @@
     api_password: "{{ api_password }}"
     criteria_drive_count: "{{ item.count }}"
     criteria_drive_type: ssd
-    name: "DP_SSD"
+    name: "DP_Hot"
     raid_level: raidDiskPool
     state: present
     validate_certs: "{{ validate_certs }}"
@@ -44,7 +44,7 @@
     api_password: "{{ api_password }}"
     criteria_drive_count: "{{ item.count }}"
     criteria_drive_type: hdd
-    name: "DP_HDD"
+    name: "DP_Cold"
     raid_level: raidDiskPool
     state: present
     validate_certs: "{{ validate_certs }}"

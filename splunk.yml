@@ -1,5 +1,4 @@
 ---
-# This playbook deploys the whole application stack in this site.
 
 - name: configure fc_hosts
   any_errors_fatal: true
@@ -31,5 +30,5 @@
   hosts: splunk_indexers
   remote_user: root
   roles:
-    - splunk_indexers
+    - IO_hosts
   tags: splunk_indexers

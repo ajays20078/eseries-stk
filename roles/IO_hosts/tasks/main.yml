@@ -1,0 +1,32 @@
+---
+
+- name: Install sg3_utils RHEL, CentOS, or SLES
+  package: name=sg3_utils state=latest
+  become: true
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
+
+- name: Install sg3_utils Ubuntu
+  package: name=sg3-utils state=latest
+  become: true
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Install scsitools Ubuntu
+  package: name=scsitools state=latest
+  become: true
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Creates directory
+  file: path=/tmp state=directory  mode=0775
+  become: true
+
+- name: Copy Linux Filesystem Script
+  copy: src=linux_filesystems.sh dest=/tmp mode=0775
+  become: true
+
+- name: Run rescan script
+  shell: rescan-scsi-bus.sh
+  become: true
+
+- name: Run Linux Filesystem script
+  shell: /tmp/linux_filesystems.sh
+  become: true
