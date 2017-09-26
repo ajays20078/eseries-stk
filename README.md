@@ -104,4 +104,6 @@ Package installers (apt, yum, etc...) need to be configured.
 
 ### Support
 
-For issues please email `ng-eseries-solutiontoolkit@netapp.com`
+For questions or queries, please email `ng-eseries-solutiontoolkit@netapp.com`. 
+
+Please enter an issue if you would like to report a defect.
