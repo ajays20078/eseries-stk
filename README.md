@@ -1,6 +1,6 @@
 ## Eseries Solution ToolKit (ESTK)
 
-This repository contains ansible playbooks that assist in configuring NetApp Eseries and attached hosts
+This repository contains ansible playbooks that assist in configuring NetApp Eseries and attached hosts for use with a particular application.
 
 #### Table of Contents
 
@@ -38,7 +38,7 @@ portion of the overall playbooks will be used.
 ### Requirements
 
 It is recommended to have SSH keys setup prior to installation. 
-Package installers (apt,yum etc...) need to be configured.  
+Package installers (apt, yum, etc...) need to be configured.  
 
 ### To docker or not to docker?
 #### To use the docker workflow:
@@ -96,7 +96,7 @@ Package installers (apt,yum etc...) need to be configured.
 
 ### TODOs and Future plans
 
-1.  Find a better way to pass in array IP addreses and passwords other than group_vars/all
+1.  Find a better way to pass in array IP addresses and passwords other than group_vars/all
 
 2.  Having Ansible handle the packaging requirements.
 
