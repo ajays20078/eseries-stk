@@ -1,0 +1,19 @@
+---
+
+- include_role:
+    name: linux_failover
+
+- name: WWN
+  shell: cat /sys/class/sas_host/host*/device/phy-*\:0/sas_phy/phy-*\:0/sas_address | cut -c 3- | cut -c -15
+  register: wwn
+  tags: wwn
+
+
+- name: Set SAS ports
+  set_fact:
+    sas_ports:
+      "{{ sas_ports| default([])  + [ {'type': 'sas' , 'label':(item.0 + item.1) , 'port':(item.0 + item.1) } ]}}"
+  with_nested:
+    - "{{ wwn.stdout_lines }}"
+    - "{{ lookup('sequence','start=0 end=7',wantlist=True) }}"
+  when: wwn.stdout_lines is defined

@@ -1,5 +1,4 @@
 ---
-# This playbook deploys the whole application stack in this site.
 
 - name: configure fc_hosts
   any_errors_fatal: true
@@ -9,6 +8,7 @@
     - fc_hosts
   tags: fc_hosts
 
+
 - name: configure iscsi_hosts
   any_errors_fatal: true
   hosts: iscsi_hosts
@@ -16,6 +16,14 @@
   roles:
     - iscsi_hosts
   tags: iscsi_hosts
+
+- name: configure sas_hosts
+  any_errors_fatal: true
+  hosts: sas_hosts
+  remote_user: root
+  roles:
+    - sas_hosts
+  tags: sas_hosts
 
 - name: configure eseries for splunk
   any_errors_fatal: true
@@ -31,5 +39,5 @@
   hosts: splunk_indexers
   remote_user: root
   roles:
-    - splunk_indexers
+    - IO_hosts
   tags: splunk_indexers

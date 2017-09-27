@@ -1,0 +1,19 @@
+---
+
+- name: Install DMMP package RHEL or CentOS
+  package: name=device-mapper-multipath state=latest
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
+  become: true
+
+- name: Install DMMP package SLES
+  package: name=device-mapper state=latest
+  when: ansible_distribution == 'SLES'
+  become: true
+
+- name: Install DMMP package Ubuntu
+  package: name=multipath-tools state=latest
+  when: ansible_distribution == 'Ubuntu'
+  become: true
+
+- name: Verify DMMP state
+  service: name=multipathd state=started
