@@ -92,9 +92,7 @@
     - "{{ hostvars[inventory_hostname]['netapp_storage_pools'] }}"
     - "{{ groups['splunk_indexers'] }}"
     - "{{ lookup('sequence','start=0 end='+(luns_per_host_per_DP - 1)|string,wantlist=True) }}"
-  when:
-
-
+  
 - name: Fibre Host Ports
   netapp_e_host:
     ssid: "{{ ssid }}"
