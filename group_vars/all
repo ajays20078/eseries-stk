@@ -1,7 +1,7 @@
 ---
 
 api_username: admin
-api_password: infiniti
+api_password: password
 
 ssid: 1
 validate_certs: False
