@@ -1,6 +1,6 @@
-## Eseries Solution ToolKit (ESTK)
+## E-Series Solution ToolKit (ESTK)
 
-This repository contains ansible playbooks that assist in configuring NetApp Eseries and attached hosts for use with a particular application.
+This repository contains ansible playbooks that assist in configuring NetApp E-Series and attached hosts for use with a particular application.
 
 #### Table of Contents
 
@@ -54,15 +54,15 @@ Package installers (apt, yum, etc...) need to be configured.
 * splunk_indexers:  Index servers that splunk is being deployed on.  These may be the same as other roles, or different.
 
 3. Fill out /home/eseries-stk/group_vars/all.
-*  For Eseries arrays, just use the ip address for the first controller.
-*  For Eseries arrays, set your user/pass for Eseries (api_username, api_password) in ./group_vars/all file.
+*  For E-Series arrays, just use the ip address for the first controller.
+*  For E-Series arrays, set your user/pass for E-Series (api_username, api_password) in ./group_vars/all file.
 
 4. Run the Ansible playbook with the following command from /home/eseries-stk directory.
 * ansible-playbook splunk.yml
 
 #### Non-docker workflow:
  
-1. Requires Unix host with network connection to all hosts and Eseries storage arrays. 
+1. Requires Unix host with network connection to all hosts and E-Series storage arrays. 
 
 2. Verify that you have the following packages installed:
     *  Python 2.7.6
