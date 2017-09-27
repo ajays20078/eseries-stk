@@ -3,4 +3,4 @@ This Dockerfile is designed for allowing development of Ansible modules in a con
 In order to run with the current project files, issue the following commands on Windows:
 
 docker build -t dev
-docker run --rm -it -v ${PWD}:/home dev
+docker run --rm -it dev
