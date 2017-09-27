@@ -70,7 +70,7 @@ Package installers (apt, yum, etc...) need to be configured.
 	*  Git
 
 3. Clone the git repository:
-    * git clone https://github.com/NetApp/estk
+    * git clone https://github.com/NetApp/eseries-stk
 
 4. Update library variable in ansible.cfg to include the path to the roles/eseries/library directory.
 
