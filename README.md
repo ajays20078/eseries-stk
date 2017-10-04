@@ -51,7 +51,7 @@ Package installers (apt, yum, etc...) need to be configured.
    * cd /home/eseries-stk
    * git pull
 
-3. Fill out /home/eseries-stk/hosts file with each host having a single line.
+3. Fill out /home/eseries-stk/hosts file with a single entry per line.
    * splunk_eseries:  Any array that should be provisioned for splunk.
       * For E-Series arrays, just use the ip address for the first controller.
    * fc_hosts:  Host servers that are connected to the array via the fibre channel host ports
