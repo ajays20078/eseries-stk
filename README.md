@@ -40,25 +40,30 @@ portion of the overall playbooks will be used.
 It is recommended to have SSH keys setup prior to installation. 
 Package installers (apt, yum, etc...) need to be configured.  
 
-### To docker or not to docker?
+### Configuration
 #### To use the docker workflow:
 
 1. Run the docker file with the following commands:
-* docker build https://raw.githubusercontent.com/NetApp/eseries-stk/master/docker/ansibleDev/Dockerfile -t eseries-stk
-* docker run --rm -it eseries-stk
+   * docker build https://raw.githubusercontent.com/NetApp/eseries-stk/master/docker/ansibleDev/Dockerfile -t eseries-stk
+   * docker run --rm -it eseries-stk
 
-2. Fill out /home/eseries-stk/hosts.
-* splunk_eseries:  Any array that should be provisioned for splunk.
-* fc_hosts:  Host servers that are connected to the array via the fibre channel host ports
-* sas_hosts:  Host servers that are connected to the array via the SAS host ports
-* splunk_indexers:  Index servers that splunk is being deployed on.  These may be the same as other roles, or different.
+2. Update git repository to ensure you are on the latest commit 
+   * cd /home/eseries-stk
+   * git pull
 
-3. Fill out /home/eseries-stk/group_vars/all.
-*  For E-Series arrays, just use the ip address for the first controller.
-*  For E-Series arrays, set your user/pass for E-Series (api_username, api_password) in ./group_vars/all file.
+3. Fill out /home/eseries-stk/hosts file with each host having a single line.
+   * splunk_eseries:  Any array that should be provisioned for splunk.
+      * For E-Series arrays, just use the ip address for the first controller.
+   * fc_hosts:  Host servers that are connected to the array via the fibre channel host ports
+   * sas_hosts:  Host servers that are connected to the array via the SAS host ports
+   * splunk_indexers:  Index servers that splunk is being deployed on.  
+      * This list should be the same as the protocol hosts such as fc_hosts or sas_hosts.
 
-4. Run the Ansible playbook with the following command from /home/eseries-stk directory.
-* ansible-playbook splunk.yml
+4. Fill out /home/eseries-stk/group_vars/all file.
+   * For E-Series arrays, set your user/pass for E-Series (api_username, api_password) in /home/eseries-stk/group_vars/all file.
+
+5. Run the Ansible playbook with the following command from /home/eseries-stk directory.
+   * ansible-playbook -i hosts splunk.yml
 
 #### Non-docker workflow:
  
@@ -70,11 +75,12 @@ Package installers (apt, yum, etc...) need to be configured.
 	*  Git
 
 3. Clone the git repository:
+    * cd /home/eseries-stk
     * git clone https://github.com/NetApp/eseries-stk
 
-4. Update library variable in ansible.cfg to include the path to the roles/eseries/library directory.
+4. If you are using a directory other than /home/eseries-stk you will need to update library variable in ansible.cfg to include the path to the roles/eseries/library directory.
 
-5. Continue with step two from docker workflow above.
+5. Continue with step three from docker workflow above.
  
 ### TODOs and Future plans
 

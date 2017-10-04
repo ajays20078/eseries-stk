@@ -1,2 +1,2 @@
 #!/bin/bash
-ansible-playbook splunk.yml
+ansible-playbook -i hosts splunk.yml
