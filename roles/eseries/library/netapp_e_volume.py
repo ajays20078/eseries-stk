@@ -203,7 +203,7 @@ class NetAppESeriesVolume(object):
             self.thin_volume_max_repo_size = self.size
 
         self.validate_certs = p['validate_certs']
-        self.wait_init = False
+        self.wait_init = True
         if not p['thin_provision']:
             self.wait_init = p['wait_for_volume_init']
 
